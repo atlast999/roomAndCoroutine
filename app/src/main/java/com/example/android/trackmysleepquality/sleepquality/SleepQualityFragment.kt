@@ -22,7 +22,10 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.fragment.NavHostFragment
 import com.example.android.trackmysleepquality.R
+import com.example.android.trackmysleepquality.database.SleepDatabase
 import com.example.android.trackmysleepquality.databinding.FragmentSleepQualityBinding
 
 /**
@@ -31,7 +34,7 @@ import com.example.android.trackmysleepquality.databinding.FragmentSleepQualityB
  * Once the user taps an icon, the quality is set in the current sleepNight
  * and the database is updated.
  */
-class SleepQualityFragment : Fragment() {
+class SleepQualityFragment : Fragment(), SleepQualityScene {
 
     /**
      * Called when the Fragment is ready to display content to the screen.
@@ -46,7 +49,17 @@ class SleepQualityFragment : Fragment() {
                 inflater, R.layout.fragment_sleep_quality, container, false)
 
         val application = requireNotNull(this.activity).application
-
+        val dataSource = SleepDatabase.getInstance(application).sleepDatabaseDao
+        val nightKey = SleepQualityFragmentArgs.fromBundle(arguments!!).sleepNightKey
+        val factory = SleepQualityViewModelFactory(nightKey, dataSource)
+        val viewModel = ViewModelProvider(this, factory).get(SleepQualityViewModel::class.java)
+        viewModel.scene = this
+        binding.sleepQualityViewModel = viewModel
+        binding.lifecycleOwner = this
         return binding.root
+    }
+
+    override fun navBack() {
+        NavHostFragment.findNavController(this).popBackStack()
     }
 }

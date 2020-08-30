@@ -23,7 +23,9 @@
      the whole ViewModel, so that we can access the LiveData,
      click handlers, and state variables. -->
     <data>
-
+        <variable
+            name="sleepQualityViewModel"
+            type="com.example.android.trackmysleepquality.sleepquality.SleepQualityViewModel" />
     </data>
 
     <!-- Start of the visible fragment layout using ConstraintLayout -->
@@ -47,6 +49,7 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <ImageView
+            android:onClick="@{_->sleepQualityViewModel.onQualitySelected(0)}"
             android:id="@+id/quality_zero_image"
             android:layout_width="@dimen/icon_size"
             android:layout_height="@dimen/icon_size"
@@ -59,6 +62,7 @@
             app:srcCompat="@drawable/ic_sleep_0" />
 
         <ImageView
+            android:onClick="@{_->sleepQualityViewModel.onQualitySelected(1)}"
             android:id="@+id/quality_one_image"
             android:layout_width="@dimen/icon_size"
             android:layout_height="@dimen/icon_size"
@@ -69,6 +73,7 @@
             app:srcCompat="@drawable/ic_sleep_1" />
 
         <ImageView
+            android:onClick="@{_->sleepQualityViewModel.onQualitySelected(2)}"
             android:id="@+id/quality_two_image"
             android:layout_width="@dimen/icon_size"
             android:layout_height="@dimen/icon_size"
@@ -80,6 +85,7 @@
             app:srcCompat="@drawable/ic_sleep_2" />
 
         <ImageView
+            android:onClick="@{_->sleepQualityViewModel.onQualitySelected(3)}"
             android:id="@+id/quality_three_image"
             android:layout_width="@dimen/icon_size"
             android:layout_height="@dimen/icon_size"
@@ -95,6 +101,7 @@
             app:srcCompat="@drawable/ic_sleep_3" />
 
         <ImageView
+            android:onClick="@{_->sleepQualityViewModel.onQualitySelected(4)}"
             android:id="@+id/quality_four_image"
             android:layout_width="@dimen/icon_size"
             android:layout_height="@dimen/icon_size"
@@ -106,6 +113,7 @@
             app:srcCompat="@drawable/ic_sleep_4" />
 
         <ImageView
+            android:onClick="@{_->sleepQualityViewModel.onQualitySelected(5)}"
             android:id="@+id/quality_five_image"
             android:layout_width="@dimen/icon_size"
             android:layout_height="@dimen/icon_size"
