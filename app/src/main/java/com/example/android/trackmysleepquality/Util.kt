@@ -1,18 +1,3 @@
-/*
- * Copyright 2018, The Android Open Source Project
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 
 package com.example.android.trackmysleepquality
 
@@ -21,9 +6,14 @@ import android.content.res.Resources
 import android.os.Build
 import android.text.Html
 import android.text.Spanned
+import android.widget.ImageView
+import android.widget.TextView
 import androidx.core.text.HtmlCompat
+import androidx.databinding.BindingAdapter
 import com.example.android.trackmysleepquality.database.SleepNight
 import java.text.SimpleDateFormat
+import java.util.*
+import java.util.concurrent.TimeUnit
 
 /**
  * These functions create a formatted string that can be set in a TextView.
@@ -102,4 +92,42 @@ fun formatNights(nights: List<SleepNight>, resources: Resources): Spanned {
     } else {
         HtmlCompat.fromHtml(sb.toString(), HtmlCompat.FROM_HTML_MODE_LEGACY)
     }
+}
+
+fun convertDurationToFormatted(startTimeMilli: Long, endTimeMilli: Long, res: Resources): String {
+    val ONE_MINUTE_MILLIS = TimeUnit.MILLISECONDS.convert(1, TimeUnit.MINUTES)
+    val ONE_HOUR_MILLIS = TimeUnit.MILLISECONDS.convert(1, TimeUnit.HOURS)
+    val durationMilli = endTimeMilli - startTimeMilli
+    val weekdayString = SimpleDateFormat("EEEE", Locale.getDefault()).format(startTimeMilli)
+    return when {
+        durationMilli < ONE_MINUTE_MILLIS -> {
+            val seconds = TimeUnit.SECONDS.convert(durationMilli, TimeUnit.MILLISECONDS)
+            res.getString(R.string.seconds_length, seconds, weekdayString)
+        }
+        durationMilli < ONE_HOUR_MILLIS -> {
+            val minutes = TimeUnit.MINUTES.convert(durationMilli, TimeUnit.MILLISECONDS)
+            res.getString(R.string.minutes_length, minutes, weekdayString)
+        }
+        else -> {
+            val hours = TimeUnit.HOURS.convert(durationMilli, TimeUnit.MILLISECONDS)
+            res.getString(R.string.hours_length, hours, weekdayString)
+        }
+    }
+}
+
+@BindingAdapter("sleepImage")
+fun setSleepImage(imageView: ImageView, sleepNight: SleepNight){
+    when(sleepNight.sleepQuality){
+        0 -> imageView.setImageResource(R.drawable.ic_sleep_0)
+        1 -> imageView.setImageResource(R.drawable.ic_sleep_1)
+        2 -> imageView.setImageResource(R.drawable.ic_sleep_2)
+        3 -> imageView.setImageResource(R.drawable.ic_sleep_3)
+        4 -> imageView.setImageResource(R.drawable.ic_sleep_4)
+        5 -> imageView.setImageResource(R.drawable.ic_sleep_5)
+    }
+}
+
+@BindingAdapter("sleepQualityString")
+fun setSleepText(textView: TextView, sleepNight: SleepNight){
+    textView.text = convertNumericQualityToString(sleepNight.sleepQuality, textView.resources)
 }

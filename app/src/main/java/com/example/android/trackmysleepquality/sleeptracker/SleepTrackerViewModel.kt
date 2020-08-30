@@ -42,7 +42,14 @@ class SleepTrackerViewModel(
     lateinit var scene: SleepTrackerScene
     private val uiScope = CoroutineScope(Dispatchers.Main + viewModelJob)
     private val tonight = MutableLiveData<SleepNight?>()
-    private val allNights = database.getAllNights()
+    private val allNights = database.getAllNights().apply {
+        observeForever {
+            adapter.data = it
+        }
+    }
+
+    val adapter = SleepNightAdapter()
+
     val nightString = Transformations.map(allNights){nights ->
         formatNights(nights, application.resources)
     }
