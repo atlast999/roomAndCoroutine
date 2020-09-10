@@ -1,22 +1,8 @@
-/*
- * Copyright 2018, The Android Open Source Project
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 
 package com.example.android.trackmysleepquality.sleeptracker
 
 import android.app.Application
+import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
@@ -24,6 +10,7 @@ import com.example.android.trackmysleepquality.database.SleepDatabaseDao
 import com.example.android.trackmysleepquality.database.SleepNight
 import com.example.android.trackmysleepquality.formatNights
 import kotlinx.coroutines.*
+import kotlin.math.log
 
 /**
  * ViewModel for SleepTrackerFragment.
@@ -44,11 +31,14 @@ class SleepTrackerViewModel(
     private val tonight = MutableLiveData<SleepNight?>()
     private val allNights = database.getAllNights().apply {
         observeForever {
-            adapter.data = it
+            adapter.submitList(it)
         }
     }
 
-    val adapter = SleepNightAdapter()
+    val adapter = SleepNightAdapter {
+        Log.d("debugne", "${it.nightId}")
+        scene.navToSleepDetail(it)
+    }
 
     val nightString = Transformations.map(allNights){nights ->
         formatNights(nights, application.resources)
@@ -59,7 +49,6 @@ class SleepTrackerViewModel(
     val clearButtonEnabled = Transformations.map(allNights){
         it.isNotEmpty()
     }
-
 
     init {
         initializeTonight()
@@ -114,10 +103,20 @@ class SleepTrackerViewModel(
     }
 
     fun onClear(){
+//        uiScope.launch {
+//            tonight.value = null
+//            clear()
+//            scene.showSnackBar()
+//        }
         uiScope.launch {
-            tonight.value = null
-            clear()
-            scene.showSnackBar()
+            allNights.value?.let {
+                addAllNights(it)
+            }
+        }
+    }
+    private suspend fun addAllNights(allNights: List<SleepNight>){
+        withContext(Dispatchers.IO){
+            allNights.forEach { database.insert(it.clone()) }
         }
     }
     private suspend fun clear(){

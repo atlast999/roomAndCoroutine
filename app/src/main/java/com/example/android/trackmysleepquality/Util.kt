@@ -116,18 +116,23 @@ fun convertDurationToFormatted(startTimeMilli: Long, endTimeMilli: Long, res: Re
 }
 
 @BindingAdapter("sleepImage")
-fun setSleepImage(imageView: ImageView, sleepNight: SleepNight){
-    when(sleepNight.sleepQuality){
-        0 -> imageView.setImageResource(R.drawable.ic_sleep_0)
-        1 -> imageView.setImageResource(R.drawable.ic_sleep_1)
-        2 -> imageView.setImageResource(R.drawable.ic_sleep_2)
-        3 -> imageView.setImageResource(R.drawable.ic_sleep_3)
-        4 -> imageView.setImageResource(R.drawable.ic_sleep_4)
-        5 -> imageView.setImageResource(R.drawable.ic_sleep_5)
+fun ImageView.setSleepImage(night: SleepNight){
+    when(night.sleepQuality){
+        0 -> setImageResource(R.drawable.ic_sleep_0)
+        1 -> setImageResource(R.drawable.ic_sleep_1)
+        2 -> setImageResource(R.drawable.ic_sleep_2)
+        3 -> setImageResource(R.drawable.ic_sleep_3)
+        4 -> setImageResource(R.drawable.ic_sleep_4)
+        5 -> setImageResource(R.drawable.ic_sleep_5)
     }
 }
 
 @BindingAdapter("sleepQualityString")
-fun setSleepText(textView: TextView, sleepNight: SleepNight){
-    textView.text = convertNumericQualityToString(sleepNight.sleepQuality, textView.resources)
+fun TextView.setSleepText(sleepNight: SleepNight){
+    text = convertNumericQualityToString(sleepNight.sleepQuality, resources)
+}
+
+@BindingAdapter("sleepDurationString")
+fun TextView.setSleepDurationText(sleepNight: SleepNight){
+    text = convertDurationToFormatted(sleepNight.startTime, sleepNight.endTime, resources)
 }

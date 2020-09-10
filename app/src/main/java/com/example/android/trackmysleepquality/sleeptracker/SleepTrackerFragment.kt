@@ -50,6 +50,10 @@ class SleepTrackerFragment : Fragment(), SleepTrackerScene {
         NavHostFragment.findNavController(this).navigate(SleepTrackerFragmentDirections.actionSleepTrackerFragmentToSleepQualityFragment(night.nightId))
     }
 
+    override fun navToSleepDetail(night: SleepNight) {
+        NavHostFragment.findNavController(this).navigate(SleepTrackerFragmentDirections.actionSleepTrackerFragmentToSleepDetailFragment(night.nightId))
+    }
+
     override fun showSnackBar() {
         Snackbar.make(view!!, getString(R.string.cleared_message), Snackbar.LENGTH_SHORT).show()
     }

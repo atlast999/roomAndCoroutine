@@ -9,7 +9,7 @@ import androidx.room.PrimaryKey
 data class SleepNight(
 
         @PrimaryKey(autoGenerate = true)
-        val nightId: Long = 0L,
+        var nightId: Long = 0L,
 
         @ColumnInfo(name = "star_time")
         val startTime: Long = System.currentTimeMillis(),
@@ -19,4 +19,6 @@ data class SleepNight(
 
         @ColumnInfo(name = "quality_rating")
         var sleepQuality: Int = -1
-)
+){
+        fun clone() = SleepNight(startTime = startTime, endTime = endTime, sleepQuality = sleepQuality)
+}

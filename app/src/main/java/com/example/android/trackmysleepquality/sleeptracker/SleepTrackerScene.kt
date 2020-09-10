@@ -5,6 +5,7 @@ import com.example.android.trackmysleepquality.database.SleepNight
 interface SleepTrackerScene {
 
     fun navToSleepQuality(night: SleepNight)
+    fun navToSleepDetail(night: SleepNight)
 
     fun showSnackBar()
 }
